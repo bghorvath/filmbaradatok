@@ -11,6 +11,11 @@ bs4 = "*"
 requests = "*"
 tqdm = "*"
 transformers = "*"
+torch = "*"
+torchvision = "*"
+torchaudio = "*"
+"pyannote.audio" = "*"
+pydub = "*"
 
 [dev-packages]
 ipykernel = "*"
