@@ -1,0 +1,2 @@
+preprocessing/speaker_segmentation/240_sampled.wav filter=lfs diff=lfs merge=lfs -text
+preprocessing/speaker_segmentation/diarization.pkl filter=lfs diff=lfs merge=lfs -text

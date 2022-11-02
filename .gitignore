@@ -1,5 +1,12 @@
 # Data
-data/audio/*
+data/*/*.mp3
+data/*/*.wav
+
+# Tokens
+*.token
+
+# IDEs
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
