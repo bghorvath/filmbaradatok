@@ -1,6 +1,6 @@
 # Data
-data/*/*.mp3
-data/*/*.wav
+*.mp3
+*.wav
 
 # Tokens
 *.token
