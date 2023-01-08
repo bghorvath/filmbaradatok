@@ -1,7 +1,7 @@
 import re
 import json
 import ffmpeg
-from preprocessing.web.crawler import parse_rss
+from preprocessing.crawler import parse_rss
 
 
 def get_metadata_artists(file: str) -> list:
@@ -12,7 +12,7 @@ def get_metadata_artists(file: str) -> list:
 
 def get_speaker_dict() -> dict:
     """Get the speaker dictionary"""
-    eps = parse_rss("preprocessing/web/episodes.rss")
+    eps = parse_rss("data/misc/episodes.rss")
     data_path = "data/audio"
 
     speaker_pattern = re.compile(r"Beszélgetnek:(.+?)\n")
@@ -40,5 +40,5 @@ def get_speaker_dict() -> dict:
 
 if __name__ == "__main__":
     speaker_dict = get_speaker_dict()
-    with open("preprocessing/metadata/speakers.json", "w") as f:
+    with open("data/misc/speakers.json", "w") as f:
         json.dump(speaker_dict, f, indent=4)
