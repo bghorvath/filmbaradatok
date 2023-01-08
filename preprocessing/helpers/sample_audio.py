@@ -12,7 +12,7 @@ def sample_audio(file_name: str):
     file_path = "data/audio/" + str(file_name) + ".mp3"
     sample_rate = 16000
     sample_start_min = 0
-    sample_end_min = 5
+    sample_end_min = 60
     sample_path = "preprocessing/speaker_segmentation/" + str(file_name) + "_sampled.wav"
     subprocess.call(
         [
