@@ -41,23 +41,3 @@ def parse_rss(xml_path: str) -> list[dict]:
         eps.append({"title": title, "filename":filename, "pubdate": pubdate, "description": description, "link": link, "download": download})
 
     return eps
-
-def get_urls(eps: list[dict], main_only: bool) -> Iterable[tuple[str, str]]:
-    for ep in eps:
-        filename = ep.get("filename")
-        url = ep.get("download")
-        if not main_only:
-            yield url, filename
-        if isinstance(filename, int):
-            yield url, filename
-
-def scrape(url: str, filename: str) ->  None:
-    r = requests.get(url)
-    with open(f"data/audio/{filename}.mp3", "wb") as file:
-        file.write(r.content)
-
-if __name__ == "__main__":
-    eps = parse_rss("../data/misc/episodes.rss")
-    urls = get_urls(eps, main_only=True)
-    for url, filename in tqdm(urls):
-        scrape(url, filename)

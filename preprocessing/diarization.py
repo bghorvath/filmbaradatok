@@ -1,18 +1,21 @@
 import os
-import pickle
+import yaml
 from pyannote.audio import Pipeline
+from preprocessing.get_speakers import get_speakers
 
-def main():
-    with open(os.path.join("data", "misc", "huggingface.token"),"r") as f:
-        ACCESS_TOKEN = f.read().strip()
-    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", use_auth_token=ACCESS_TOKEN)
-
-    audio_file = "240"
-    audio_file_path = os.path.join("data", "audio", audio_file + ".wav")
+class Diarization:
+    def __init__(self, file_name: str) -> None:
+        self.audio_file_path = os.path.join("data", "audio", file_name)
+        with open(os.path.join("data", "misc", "huggingface.token"),"r") as f:
+            self.access_token = f.read().strip()
+        self.speakers = get_speakers(rss_path=os.path.join("data", "misc", "episodes.rss"))
+        self.speaker_embeddings = self.get_speaker_embeddings()
+        self.diarization = self.get_diarization()
     
-    diarization = pipeline(audio_file_path)
-    with open(os.path.join("data", "text", audio_file + ".pkl"), "wb") as f:
-        pickle.dump(diarization, f)
+    def get_speaker_embeddings(self):
+        pass
 
-if __name__ == "__main__":
-    main()
+    def get_diarization(self):
+        pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", use_auth_token=self.access_token)
+        diarization = pipeline(self.audio_file_path)
+        return [{"start": turn.start, "end": turn.end, "speaker": speaker} for turn, _, speaker in diarization.itertracks()]
