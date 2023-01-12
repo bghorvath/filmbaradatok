@@ -16,6 +16,7 @@ torchvision = "*"
 torchaudio = "*"
 "pyannote.audio" = "*"
 pydub = "*"
+nltk = "*"
 
 [dev-packages]
 ipykernel = "*"

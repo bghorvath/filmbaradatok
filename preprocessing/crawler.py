@@ -57,7 +57,7 @@ def scrape(url: str, filename: str) ->  None:
         file.write(r.content)
 
 if __name__ == "__main__":
-    eps = parse_rss("preprocessing/web/episodes.rss")
+    eps = parse_rss("../data/misc/episodes.rss")
     urls = get_urls(eps, main_only=True)
     for url, filename in tqdm(urls):
         scrape(url, filename)
