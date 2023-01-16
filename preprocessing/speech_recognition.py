@@ -1,4 +1,7 @@
+import os
+import json
 import whisper
+from preprocessing.notify import notify
 
 class SpeechRecognition:
     def __init__(self, model_size: str):
@@ -20,4 +23,9 @@ class SpeechRecognition:
 
 if __name__ == "__main__":
     speech_recognition = SpeechRecognition("large")
-    result = speech_recognition.transcribe("data/audio/194.wav")
+    for f in os.listdir("data/audio"):
+        if f.endswith(".mp3"):
+            result = speech_recognition.transcribe(os.path.join("data", "audio", f))
+            notify(f"Job done: transcript for {f}")
+            with open(os.path.join("data", "text", f"{f[:-4]}_transcript.json"), "w") as f:
+                json.dump(result, f, indent=4)
