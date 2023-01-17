@@ -26,12 +26,14 @@ if __name__ == "__main__":
     audio_dir = "data/audio"
     text_dir = "data/speech_recognition"
     speech_recognition = SpeechRecognition("large-v2")
-    audio_list = [f for f in os.listdir(audio_dir) if f.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{f[:-4]}_transcript.json"))]
-    for i, f in enumerate(audio_list):
+    audio_list = [audio_file for audio_file in os.listdir(audio_dir) if audio_file.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{audio_file[:-4]}.json"))]
+    for i, audio_file in enumerate(audio_list):
+        current_time = time.strftime("%H:%M:%S", time.localtime())
+        print(f"{current_time} |  starting job {i+1}/{len(audio_list)}: transcribing {audio_file}")
         start = time.time()
-        audio_path = os.path.join(audio_dir, f)
+        audio_path = os.path.join(audio_dir, audio_file)
         result = speech_recognition.transcribe(audio_path)
-        with open(os.path.join(text_dir, f"{f[:-4]}_transcript.json"), "w") as f:
-            json.dump(result, f, indent=4)
         end = time.time()
-        notify(f"Job {i+1}/{len(audio_list)} done in {(end-start)//3600}h {(end-start)//60}m: transcribed {f}")
+        notify(f"Job {i+1}/{len(audio_list)} done in {int((end-start)//3600)}h {int(((end-start)%3600)//60)}m: transcribed {audio_file}")
+        with open(os.path.join(text_dir, f"{audio_file[:-4]}.json"), "w") as f:
+            json.dump(result, f, indent=4)
