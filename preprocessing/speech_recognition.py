@@ -22,10 +22,13 @@ class SpeechRecognition:
         ]
 
 if __name__ == "__main__":
-    speech_recognition = SpeechRecognition("large")
-    for f in os.listdir("data/audio"):
-        if f.endswith(".mp3"):
-            result = speech_recognition.transcribe(os.path.join("data", "audio", f))
-            notify(f"Job done: transcript for {f}")
-            with open(os.path.join("data", "text", f"{f[:-4]}_transcript.json"), "w") as f:
-                json.dump(result, f, indent=4)
+    audio_dir = "data/audio"
+    text_dir = "data/speech_recognition"
+    speech_recognition = SpeechRecognition("large-v2")
+    audio_list = [f for f in os.listdir(audio_dir) if f.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{f[:-4]}_transcript.json"))]
+    for i, f in enumerate(audio_list):
+        audio_path = os.path.join(audio_dir, f)
+        result = speech_recognition.transcribe(audio_path)
+        notify(f"Job {i+1}/{len(audio_list)} done: transcript for {f}")
+        with open(os.path.join(text_dir, f"{f[:-4]}_transcript.json"), "w") as f:
+            json.dump(result, f, indent=4)
