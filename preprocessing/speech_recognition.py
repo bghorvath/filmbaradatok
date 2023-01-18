@@ -2,6 +2,8 @@ import os
 import time
 import json
 import whisper
+import gc
+import ffmpeg
 from preprocessing.notify import notify
 
 class SpeechRecognition:
@@ -21,13 +23,21 @@ class SpeechRecognition:
             }
             for x in transcript["segments"]
         ]
+    
+
 
 if __name__ == "__main__":
     audio_dir = "data/audio"
     text_dir = "data/speech_recognition"
     speech_recognition = SpeechRecognition("large-v2")
-    audio_list = [audio_file for audio_file in os.listdir(audio_dir) if audio_file.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{audio_file[:-4]}.json"))]
+    audio_list = []
+    for audio_file in os.listdir(audio_dir):
+        audio_length = ffmpeg.probe(os.path.join(audio_dir, audio_file)).get("format", {}).get("duration")
+        if audio_file.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{audio_file[:-4]}.json")) and float(audio_length) <  16000:
+            audio_list.append(audio_file)
+    
     for i, audio_file in enumerate(audio_list):
+        gc.collect()
         current_time = time.strftime("%H:%M:%S", time.localtime())
         print(f"{current_time} |  starting job {i+1}/{len(audio_list)}: transcribing {audio_file}")
         start = time.time()
