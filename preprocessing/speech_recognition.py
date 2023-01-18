@@ -33,10 +33,12 @@ if __name__ == "__main__":
     audio_list = []
     audio_length_dict = {}
     for audio_file in os.listdir(audio_dir):
-        audio_length = ffmpeg.probe(os.path.join(audio_dir, audio_file)).get("format", {}).get("duration")
-        audio_length_dict[audio_file] = audio_length
-        if audio_file.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{audio_file[:-4]}.json")) and float(audio_length) <  16000:
-            audio_list.append(audio_file)
+        if audio_file.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{audio_file[:-4]}.json")):
+            audio_length = ffmpeg.probe(os.path.join(audio_dir, audio_file)).get("format", {}).get("duration")
+            audio_length = float(audio_length)
+            audio_length_dict[audio_file] = audio_length
+            if audio_length <  16000:
+                audio_list.append(audio_file)
     
     for i, audio_file in enumerate(audio_list):
         gc.collect()
