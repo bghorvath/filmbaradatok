@@ -88,8 +88,12 @@ class RSSParser:
             timestamp = re.search(r"\((?:\d+:?)+\)" , desc)
             if timestamp is not None:
                 desc = desc.replace(timestamp.group(0), "")
-                desc = desc.strip()
                 timestamp = timestamp.group(0).replace("(", "").replace(")", "")
-                desc_timestamp.append((desc, timestamp))
+            desc = desc.lower()
+            desc = re.sub(r"[^a-zíéáóöőúüű0-9 ]", " ", desc)
+            desc = re.sub(r"\s+", " ", desc)
+            desc = desc.replace("spoileres", "")
+            desc = desc.strip()
+            desc_timestamp.append((desc, timestamp))
 
         return desc_timestamp
