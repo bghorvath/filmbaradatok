@@ -9,8 +9,10 @@ def notify(message: str) -> None:
     Args:
         message (str): Message to send.
     """
-    telegram_token = os.environ["TELEGRAM_TOKEN"]
-    chat_id = os.environ["TELEGRAM_CHAT_ID"]
+    telegram_token = os.environ.get("TELEGRAM_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if telegram_token is None or chat_id is None:
+        raise ValueError("TELEGRAM_TOKEN or TELEGRAM_CHAT_ID environment variables are not set")
 
     telegram_url = f"https://api.telegram.org/bot{telegram_token}"
 
