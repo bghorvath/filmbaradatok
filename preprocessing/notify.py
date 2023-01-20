@@ -9,11 +9,8 @@ def notify(message: str) -> None:
     Args:
         message (str): Message to send.
     """
-    with open(os.path.join("data", "misc", "telegram.token"), "r") as f:
-        telegram_credentials = json.load(f)
-
-    telegram_token = telegram_credentials["token"]
-    chat_id = telegram_credentials["chat_id"]
+    telegram_token = os.environ["TELEGRAM_TOKEN"]
+    chat_id = os.environ["TELEGRAM_CHAT_ID"]
 
     telegram_url = f"https://api.telegram.org/bot{telegram_token}"
 

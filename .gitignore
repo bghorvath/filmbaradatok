@@ -1,9 +1,7 @@
 # Data
 *.mp3
 *.wav
-
-# Tokens
-*.token
+*.json
 
 # IDEs
 .vscode/
