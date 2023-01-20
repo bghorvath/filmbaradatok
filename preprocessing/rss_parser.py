@@ -1,11 +1,8 @@
-from typing import Iterable
 import re
-import requests
-from tqdm import tqdm
 from bs4 import BeautifulSoup as bs
 
 class RSSParser:
-    def __init__(self, rss_path) -> None:
+    def __init__(self, rss_path: str) -> None:
         rss_path = rss_path
         rss = self.parse_rss(rss_path)
         self.episode_dict = self.get_ep_dict(rss)
@@ -58,7 +55,7 @@ class RSSParser:
             ep_dict[ep["filename"]] = {k: v for k, v in ep.items() if k != "filename"}
         return ep_dict
 
-    def get_topics(self, filename: int) -> list[(str, str)]:
+    def get_topics(self, filename: int) -> list[dict]:
         """
         Get topics from episode description.
 
@@ -73,27 +70,27 @@ class RSSParser:
         pattern = re.compile(r"Téma:?(.{4,}?)(?=\n\n|$)", re.DOTALL)
 
         search = pattern.search(ep["description"])
-        parsed_desc = search.group(1).strip() if search else None
+        matched_topics = search.group(1).strip() if search else None
 
         if filename == 20:
-            parsed_desc = "Gengszterkorzó - Boardwalk Empire 1:44\nDr. House 13:40\nAmerican Horror Story 29:55\nJeremiah 42:21\nJericho 55:35\nHazudj, ha tudsz (Lie to me) 1:09:51\nSpartacus - 1:21:15\nTerminator - Sarah Connor krónikái 1:33:05"
+            matched_topics = "Gengszterkorzó - Boardwalk Empire 1:44\nDr. House 13:40\nAmerican Horror Story 29:55\nJeremiah 42:21\nJericho 55:35\nHazudj, ha tudsz (Lie to me) 1:09:51\nSpartacus - 1:21:15\nTerminator - Sarah Connor krónikái 1:33:05"
         
-        if parsed_desc is None:
+        if matched_topics is None:
             return []
 
-        parsed_desc_list = parsed_desc.split("\n")
+        matched_topic_list = matched_topics.split("\n")
         desc_timestamp = []
-        for desc in parsed_desc_list:
-            desc = re.sub(r"^[^a-zA-Z0-9]+", "", desc)
-            timestamp = re.search(r"\((?:\d+:?)+\)" , desc)
+        timestamp_pattern = re.compile(r"\d{1,2}:\d{2}(?::\d{2})?")
+        for topic in matched_topic_list:
+            timestamp = timestamp_pattern.search(topic)
             if timestamp is not None:
-                desc = desc.replace(timestamp.group(0), "")
-                timestamp = timestamp.group(0).replace("(", "").replace(")", "")
-            desc = desc.lower()
-            desc = re.sub(r"[^a-zíéáóöőúüű0-9 ]", " ", desc)
-            desc = re.sub(r"\s+", " ", desc)
-            desc = desc.replace("spoileres", "")
-            desc = desc.strip()
-            desc_timestamp.append((desc, timestamp))
+                topic = timestamp_pattern.sub("", topic)
+                timestamp = timestamp.group(0)
+            topic = topic.lower()
+            topic = re.sub(r"[^a-zíéáóöőúüű0-9 ]", " ", topic)
+            topic = re.sub(r"\s+", " ", topic)
+            topic = topic.replace("spoileres", "")
+            topic = topic.strip()
+            desc_timestamp.append({"topic": topic, "timestamp": timestamp})
 
         return desc_timestamp
