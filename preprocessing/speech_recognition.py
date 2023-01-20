@@ -51,4 +51,4 @@ if __name__ == "__main__":
         current_time = time.strftime("%H:%M", time.localtime())
         notify(f"{current_time} | FINISHED transcribing {audio_file} | {i+1}/{len(audio_list)} | TOOK {int((end-start)//3600)}h {int(((end-start)%3600)//60)}m")
         with open(os.path.join(text_dir, f"{audio_file[:-4]}.json"), "w") as f:
-            json.dump(result, f, indent=4)
+            json.dump(result, f, indent=4, ensure_ascii=False)
