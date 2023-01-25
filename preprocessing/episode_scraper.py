@@ -1,7 +1,7 @@
 from typing import Iterable
 import requests
 from tqdm import tqdm
-from preprocessing.rss_parser import parse_rss
+from preprocessing.rss_parser import RSSParser
 
 def get_urls(eps: list[dict], main_only: bool) -> Iterable[tuple[str, str]]:
     for ep in eps:
@@ -18,7 +18,7 @@ def scrape_episode(url: str, filename: str) ->  None:
         file.write(r.content)
 
 def scrape_all_episodes(rss_path = "../data/misc/episodes.rss"):
-    episodes_rss = parse_rss(rss_path)
+    episodes_rss = RSSParser(rss_path)()
     urls = get_urls(episodes_rss, main_only=True)
     for url, filename in tqdm(urls):
         scrape_episode(url, filename)

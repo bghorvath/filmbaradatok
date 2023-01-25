@@ -3,11 +3,10 @@ import nltk
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
 
-class Transcript:
+class SpeakerTranscript:
     def __init__(self, speech, diarization):
         self.speech = speech
         self.diarization = diarization
-        self.transcript = self.create_transcript()
     
     @staticmethod
     def join_subsentences(speech_data: list[dict]) -> list[dict]:
@@ -67,7 +66,7 @@ class Transcript:
                     sent_start = sent_end
         return tokenized_dialogues
 
-    def create_transcript(self) -> None:
+    def create_transcript(self) -> list[dict]:
         """
         Create transcript. WIP.
         """
@@ -126,4 +125,7 @@ class Transcript:
                 speaker = new_speaker
                 speaker_text = new_text
         
-        self.transcript = transcript
+        return transcript
+
+    def __call__(self) -> list[dict]:
+        return self.create_transcript()
