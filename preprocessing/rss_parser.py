@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from bs4 import BeautifulSoup as bs
 
 class RSSParser:
@@ -26,6 +27,7 @@ class RSSParser:
         for item in items:
             title = item.find("title").text
             pubdate = item.find("pubdate").text
+            pubdate = datetime.strptime(pubdate, "%a, %d %b %Y %H:%M:%S %z").replace(tzinfo=None)
             description = item.find("description").text
             link = item.find("link").text
             download = item.find("enclosure").get("url")
