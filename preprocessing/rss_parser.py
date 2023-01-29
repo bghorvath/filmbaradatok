@@ -82,3 +82,23 @@ class RSSParser:
             desc_timestamp.append({"topic": topic, "timestamp": timestamp})
 
         return desc_timestamp
+
+    @staticmethod
+    def get_speakers(ep_dict: dict) -> list[str]:
+        """
+        Get speakers from episode description.
+
+        Returns:
+            list[str]: List of speakers.
+        """
+        if ep_dict is None:
+            return []
+        speaker_pattern = re.compile(r"Beszélgetnek:(.+?)\n")
+        desc = episode_rss.get("description")
+        speaker_search = re.search(speaker_pattern, desc+"\n")
+        if speaker_search is None:
+            return []
+        speakers = speaker_search.group(1)
+        speakers = speakers.split(",")
+        speakers = [s.strip().capitalize() for s in speakers]
+        return speakers
