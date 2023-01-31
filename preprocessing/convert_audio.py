@@ -1,15 +1,12 @@
 import subprocess
 
-def convert_audio(input_path: str, output_path: str) -> None:
+def convert_audio(input_path: str, output_path: str, sample_start_s: int, sample_end_s: int) -> None:
     """Convert audio file to WAV file.
     Args:
         file_path (str): Path to audio file.
     Returns:
         str: Path to converted audio file.
     """
-    sample_rate = 16000
-    sample_start_min = 0
-    sample_end_min = 180
     subprocess.call(
         [
             "ffmpeg",
@@ -19,11 +16,11 @@ def convert_audio(input_path: str, output_path: str) -> None:
             "-ac", # number of audio channels
             "1", # mono
             "-ar", # audio sampling rate
-            str(sample_rate),
+            "16000",
             "-ss", # sample start time
-            str(sample_start_min * 60),
+            str(sample_start_s),
             "-to", # sample end time
-            str(sample_end_min * 60),
+            str(sample_end_s),
             output_path, # output file
         ]
     )
