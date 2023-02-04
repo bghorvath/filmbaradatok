@@ -20,6 +20,12 @@ class SpeechRecognition:
         self.text_dir = text_dir
         
         self.audio_list = [audio_file for audio_file in os.listdir(audio_dir) if audio_file.endswith(".mp3") and not os.path.exists(os.path.join(text_dir, f"{audio_file[:-4]}.json"))]
+        
+        self.audio_length_dict = {}
+        for audio_file in self.audio_list:
+            audio_length = ffmpeg.probe(os.path.join(audio_dir, audio_file)).get("format", {}).get("duration")
+            audio_length = int(float(audio_length))
+            self.audio_length_dict[audio_file] = audio_length
 
         try:
             self.model = whisper.load_model(model_size)
@@ -41,14 +47,13 @@ class SpeechRecognition:
     
     def transcribe(self, audio_file: str) -> list[dict]:
         audio_path = os.path.join(self.audio_dir, audio_file)
-        audio_length = ffmpeg.probe(audio_path).get("format", {}).get("duration")
-        audio_length = int(float(audio_length))
+        audio_length = self.audio_length_dict[audio_file]
         if audio_length > 16000:
             transcript = self.model.transcribe(audio_path)
             transcript = [{"start": x["start"], "end": x["end"], "text": x["text"]} for x in transcript["segments"]]
         else:
             audio_parts = audio_length // 16000 + 1
-            split_audio(audio_file, audio_parts)
+            self.split_audio(audio_file, audio_parts)
             
             transcript = []
             for i in range(audio_parts):
@@ -66,7 +71,7 @@ class SpeechRecognition:
             gc.collect()
             
             current_time = time.strftime("%H:%M", time.localtime())
-            eta = time.strftime("%H:%M", time.localtime(time.time() + audio_length_dict[audio_file]/2))
+            eta = time.strftime("%H:%M", time.localtime(time.time() + self.audio_length_dict[audio_file]/2))
             notify(f"{current_time} | STARTED transcribing {audio_file} | {i+1}/{len(self.audio_list)} | ETA: {eta}")
             start = time.time()
             
