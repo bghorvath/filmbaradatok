@@ -61,7 +61,7 @@ class SpeechRecognition:
 
         return transcript
     
-    def __call__(self, audio_path: str) -> None:
+    def __call__(self) -> None:
         for i, audio_file in enumerate(self.audio_list):
             gc.collect()
             
