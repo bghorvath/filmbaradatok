@@ -27,15 +27,12 @@ class SpeechRecognition:
             audio_length = int(float(audio_length))
             self.audio_length_dict[audio_file] = audio_length
 
-        try:
-            self.model = whisper.load_model(model_size)
-        except:
-            raise Exception("Model not found.")
+        self.model = whisper.load_model(model_size)
     
     def split_audio(self, audio_file: str, audio_parts: int) -> None:
-        current_time = time.strftime("%H:%M", time.localtime())
-        notify(f"{current_time} | STARTED splitting {audio_file} into {audio_parts} parts")
         for i in range(audio_parts):
+            current_time = time.strftime("%H:%M", time.localtime())
+            notify(f"{current_time} | SPLITTING {audio_file} into {audio_parts} parts | {i+1}/{audio_parts}")
             convert_audio(
                 os.path.join(self.audio_dir, audio_file),
                 os.path.join(self.audio_dir, f"{audio_file[:-4]}_{i}.mp3"),
