@@ -14,7 +14,7 @@ class SpeechRecognition:
         self,
         model_size: str,
         audio_dir: str = "data/audio",
-        text_dir: str = "data/text",
+        text_dir: str = "data/speech_recognition",
         ):
         self.audio_dir = audio_dir
         self.text_dir = text_dir
@@ -42,17 +42,15 @@ class SpeechRecognition:
                 i * 16000,
                 (i + 1) * 16000,
             )
-        current_time = time.strftime("%H:%M", time.localtime())
-        notify(f"{current_time} | FINISHED splitting {audio_file} into {audio_parts} parts")
     
     def transcribe(self, audio_file: str) -> list[dict]:
         audio_path = os.path.join(self.audio_dir, audio_file)
         audio_length = self.audio_length_dict[audio_file]
-        if audio_length > 16000:
+        if audio_length < 16000:
             transcript = self.model.transcribe(audio_path)
             transcript = [{"start": x["start"], "end": x["end"], "text": x["text"]} for x in transcript["segments"]]
         else:
-            audio_parts = audio_length // 16000 + 1
+            audio_parts = audio_length//16000 + 1
             self.split_audio(audio_file, audio_parts)
             
             transcript = []
